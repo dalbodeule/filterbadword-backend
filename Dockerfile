@@ -1,7 +1,10 @@
 FROM python:3.11.6
-WORKDIR /usr/src/app
+WORKDIR /code
 
-COPY . .
-RUN pip install -r requirements.txt
+COPY requirements.txt /code/requirements.txt
 
-CMD ["python3 main.py"]
+RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+
+COPY . /code/app
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "3000", "--proxy-headers"]
