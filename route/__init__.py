@@ -1,0 +1,1 @@
+from .isbadword import ncf as isBadWord
