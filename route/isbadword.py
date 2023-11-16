@@ -7,8 +7,8 @@ from konlp.kma.klt2023 import klt2023
 from os import path
 import os
 
-TFModel = tf.keras.models.load_model(path.join(os.getcwd(), 'saved_model.h5'))
-fastTextModel = fasttext.load_model(path.join(os.getcwd(), 'fasttext.bin'))
+TFModel = tf.keras.models.load_model(path.join(os.getcwd(), 'model', 'saved_model.h5'))
+fastTextModel = fasttext.load_model(path.join(os.getcwd(), 'model', 'fasttext.bin'))
 klt = klt2023()
 
 def is_float(element: any) -> bool:
