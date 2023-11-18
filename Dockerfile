@@ -25,7 +25,7 @@ RUN apt-get autoclean && apt-get autoremove && \
     dpkg --configure -a && apt-get install -f
 
 RUN pip3 install \
-    wheel \
+    wheel fastapi uvicorn\
     --break-system-packages
 
 WORKDIR /code
@@ -34,6 +34,6 @@ COPY requirements.txt /code/requirements.txt
 
 COPY . /code
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "3000", "--proxy-headers"]
+ENTRYPOINT ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "3000", "--proxy-headers"]
 
 # https://stackoverflow.com/a/72021175/11516704
