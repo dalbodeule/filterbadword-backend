@@ -32,8 +32,10 @@ WORKDIR /code
 
 COPY requirements.txt /code/requirements.txt
 
+RUN pip install -r /code/requirements.txt --no-cache-dir
+
 COPY . /code
 
-ENTRYPOINT ["python3.11", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "3000", "--proxy-headers"]
+ENTRYPOINT ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "3000", "--proxy-headers"]
 
 # https://stackoverflow.com/a/72021175/11516704
