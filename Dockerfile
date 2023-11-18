@@ -1,13 +1,17 @@
-FROM ubuntu:latest
-LABEL maintainer="dalbodeule <jioo0224@naver.com>"
+FROM python:3.11.6
+WORKDIR /code
 
-ENV LANG=C.UTF-8
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN mkdir -p /usr/share/man/man1 /usr/share/man/man2
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends tzdata g++ curl openjdk-17-jdk \
-    python3.11 python3-pip libpython3.11-dev && python3 -m pip install --upgrade pip wheel
-COPY . .
+    apt-get install -y --no-install-recommends \
+    openjdk-11-jre && \
+    pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
-RUN pip install --no-cache-dir --upgrade -r requirements.txt
+COPY requirements.txt /code/requirements.txt
+
+COPY . /code
 
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "3000", "--proxy-headers"]
