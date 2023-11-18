@@ -11,7 +11,7 @@ RUN apt-get update && apt-get upgrade -y && \
 # Install python
 RUN apt-get update --fix-missing && apt-get upgrade -y && \
     apt-get install -y sudo dialog git openssh-server wget \
-    curl cmake nano python3 python3-pip python3-setuptools \
+    curl cmake nano python3 python3-pip python3-setuptools python3-venv \
     build-essential libpq-dev gdal-bin libgdal-dev
 
 RUN apt-get update --yes && \
