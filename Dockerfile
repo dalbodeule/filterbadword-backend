@@ -1,5 +1,5 @@
 FROM openjdk:22
-RUN microdnf install python311
+RUN microdnf install python311 pip3
 
 WORKDIR /code
 
