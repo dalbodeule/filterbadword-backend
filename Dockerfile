@@ -32,11 +32,11 @@ WORKDIR /code
 COPY . /code
 
 RUN python3 -m venv . && \
-    /code/bin/activate && \
+    "/bin/bash" -c code/bin/activate && \
     pip install -r /code/requirements.txt --no-cache-dir --break-system-packages
 
 VOLUME /code/model
 
-ENTRYPOINT ["/code/bin/activate", "&&", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "3000", "--proxy-headers"]
+ENTRYPOINT ["/bin/bash", "-c", "source /code/bin/bash && uvicorn main:app --host 0.0.0.0 --port 3000 --proxy-headers"]
 
 # https://stackoverflow.com/a/72021175/11516704
