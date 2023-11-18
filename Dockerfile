@@ -5,7 +5,7 @@ ENV LANG=C.UTF-8
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends tzdata g++ curl openjdk-17-jdk \
-    python3.11 python3-pip && python3 -m pip install --upgrade pip wheel
+    python3.11 python3-pip libpython3.11-dev && python3 -m pip install --upgrade pip wheel
 COPY . .
 
 RUN pip install --no-cache-dir --upgrade -r requirements.txt
