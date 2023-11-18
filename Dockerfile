@@ -4,8 +4,8 @@ WORKDIR /code
 RUN mkdir -p /usr/share/man/man1 /usr/share/man/man2
 
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 04EE7237B7D453EC 648ACFD622F3D138 && \
-    echo 'deb http://httpredir.debian.org/debian buster-backports main contrib non-free' | sudo tee -a /etc/apt/sources.list.d/debian-backports.list && \
-    apt-get update && \
+    echo 'deb http://httpredir.debian.org/debian buster-backports main contrib non-free' | tee -a /etc/apt/sources.list.d/debian-backports.list
+RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     openjdk-11-jre && \
     pip install --no-cache-dir --upgrade -r /code/requirements.txt
