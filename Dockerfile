@@ -1,9 +1,9 @@
-FROM python:3.11.6
+FROM openjdk:22
+RUN microdnf install python311
+
 WORKDIR /code
 
 COPY requirements.txt /code/requirements.txt
-
-RUN apt install openjdk-17-jdk -y && pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
 COPY . /code
 
