@@ -32,7 +32,7 @@ WORKDIR /code
 COPY . /code
 
 RUN python3 -m venv . && \
-    "/bin/bash" -c code/bin/activate && \
+    /bin/bash -c /code/bin/activate && \
     pip install -r /code/requirements.txt --no-cache-dir --break-system-packages
 
 VOLUME /code/model
