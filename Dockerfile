@@ -36,6 +36,6 @@ RUN python3 -m venv . && \
 
 VOLUME /code/model
 
-ENTRYPOINT ["/bin/bash", "-c", "source /code/bin/bash && uvicorn main:app --host 0.0.0.0 --port 3000 --proxy-headers"]
+ENTRYPOINT ["/bin/bash", "-c", "source /code/bin/activate && uvicorn main:app --host 0.0.0.0 --port 3000 --proxy-headers"]
 
 # https://stackoverflow.com/a/72021175/11516704
