@@ -1,8 +1,6 @@
 FROM python:3.11.6
 WORKDIR /code
 
-ENV DEBIAN_FRONTEND=noninteractive
-
 RUN mkdir -p /usr/share/man/man1 /usr/share/man/man2
 
 RUN apt-get update && \
