@@ -32,9 +32,11 @@ WORKDIR /code
 
 COPY requirements.txt /code/requirements.txt
 
-RUN pip install -r /code/requirements.txt --no-cache-dir
+RUN pip install -r /code/requirements.txt --no-cache-dir --break-system-packages
 
 COPY . /code
+
+VOLUME /code/model
 
 ENTRYPOINT ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "3000", "--proxy-headers"]
 
