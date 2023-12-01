@@ -1,15 +1,22 @@
-from fastapi import HTTPException, Security, APIRouter
+from fastapi import Request, APIRouter, HTTPException, Security
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel
+from typing import List
+import numpy as np
 import tensorflow as tf
+import keras
 import fasttext
+import re
+import hgtk
+
 from auth import get_api_key
-from konlp.kma.klt2023 import klt2023
 
 from os import path
 import os
 
-TFModel = tf.keras.models.load_model(path.join(os.getcwd(), 'model', 'saved_model.h5'))
+TFModel: keras.Model = keras.models.load_model(path.join(os.getcwd(), 'model', 'model.h5'))
 fastTextModel = fasttext.load_model(path.join(os.getcwd(), 'model', 'fasttext.bin'))
-klt = klt2023()
+korean_rule = re.compile('[ㄱ-ㅎㅏ-ㅣ가-힣]')
 
 def is_float(element: any) -> bool:
     #If you expect None to be passed:
@@ -23,25 +30,52 @@ def is_float(element: any) -> bool:
 
 ncf = APIRouter(prefix='/api')
 
-@ncf.post('/')
-async def predict(text: str, api_key: str = Security(get_api_key)):
+def get_vector(data: List[str]):
+    words = []
+
+    for word in data:
+      if korean_rule.match(word):
+        try:
+          words.append(hgtk.text.decompose(word, compose_code=''))
+        except:
+          words.append(word)
+          continue
+      else:
+        words.append(word)
+
+    data = np.array([fastTextModel[word] for word in words], dtype=np.float64)
+    np.nan_to_num(data)
+
+    return data
+
+class ResponseBadword(BaseModel):
+   prediction: float
+   type: int
+
+@ncf.post('/', response_model= List[ResponseBadword])
+async def predict(request: List[str], api_key: str = Security(get_api_key)):
     try:
-        data = klt.morphs(str(text).strip())
-        p = []
-        for q in data:
-            if (not is_float(q)) and q != '_':
-                p.append(q)
-        if len(p) == 0:
-            return { "predition": 0.0 }
-        data = [fastTextModel[i] for i in p]
+        if len(request) == 0 or request[0] == '':
+            return [ResponseBadword(predition =  0, type = 0)]
+        
+        requests = []
 
-        data = tf.ragged.constant([data])
+        for text in request:
+            data = str(text).strip().split()
+            data = get_vector(data)
+            requests.append(data)
 
+        
+        data = tf.ragged.constant(requests)
         predict = TFModel.predict(data, verbose=0)
 
-        return { "predition": float(predict[0]) }
+        responses = []
+        
+        for i in predict:
+            responses.append(ResponseBadword(prediction= float(np.max(i)), type= np.argmax(i).item()))
+        return responses
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=e)
 
 @ncf.get('/')
 async def default():
