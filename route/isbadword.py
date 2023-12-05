@@ -16,7 +16,6 @@ import os
 
 TFModel: keras.Model = keras.models.load_model(path.join(os.getcwd(), 'model', 'model.h5'))
 fastTextModel = fasttext.load_model(path.join(os.getcwd(), 'model', 'fasttext.bin'))
-korean_rule = re.compile('[ㄱ-ㅎㅏ-ㅣ가-힣]')
 
 def is_float(element: any) -> bool:
     #If you expect None to be passed:
@@ -34,14 +33,7 @@ def get_vector(data: List[str]):
     words = []
 
     for word in data:
-      if korean_rule.match(word):
-        try:
-          words.append(hgtk.text.decompose(word, compose_code=''))
-        except:
-          words.append(word)
-          continue
-      else:
-        words.append(word)
+        words.append(hgtk.text.decompose(word, compose_code=''))
 
     data = np.array([fastTextModel[word] for word in words], dtype=np.float64)
     np.nan_to_num(data)
@@ -75,7 +67,7 @@ async def predict(request: List[str], api_key: str = Security(get_api_key)):
             responses.append(ResponseBadword(prediction= float(np.max(i)), type= np.argmax(i).item()))
         return responses
     except Exception as e:
-        raise HTTPException(status_code=500, detail=e)
+        raise HTTPException(status_code=500, detail=str(e))
 
 @ncf.get('/')
 async def default():
