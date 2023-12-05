@@ -67,7 +67,8 @@ async def predict(request: List[str], api_key: str = Security(get_api_key)):
             responses.append(ResponseBadword(prediction= float(np.max(i)), type= np.argmax(i).item()))
         return responses
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        print(e)
+        raise HTTPException(status_code=500, detail="contact the administrator.")
 
 @ncf.get('/')
 async def default():
